@@ -93,6 +93,7 @@ class GUI(simulation: Simulation) extends JFrame {
     override def paint(g: Graphics) {
       g.setColor(Color.BLACK)
       g.fillRect(0, 0, normalizedUniverseRadius * 2, normalizedUniverseRadius * 2)
+
       g.setColor(Color.WHITE)
       g.drawOval(0, 0, normalizedUniverseRadius * 2, normalizedUniverseRadius * 2)
 
@@ -106,6 +107,7 @@ class GUI(simulation: Simulation) extends JFrame {
         if (showDistance.isSelected) drawDistances(g, x, y)
         if (showLines.isSelected) drawLines(g, x, y)
       }
+
       try {
         Thread.sleep(slider.getValue)
       }
@@ -114,7 +116,10 @@ class GUI(simulation: Simulation) extends JFrame {
           e.printStackTrace
         }
       }
-      if (simulate) sim.simulate
+
+      if (simulate)
+        sim.simulate()
+
       repaint()
     }
 

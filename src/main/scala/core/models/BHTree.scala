@@ -15,15 +15,16 @@ class BHTree(q: Quad) {
     * the body to add.
     */
   def insert(b: Body) {
+
     if (body == null) {
       body = b
       return
     }
+
     if (!isExternal) {
       body = body + b
       putBody(b)
-    }
-    else {
+    } else {
       NW = new BHTree(q.northWest)
       NE = new BHTree(q.northEast)
       SE = new BHTree(q.southEast)
@@ -66,11 +67,14 @@ class BHTree(q: Quad) {
     */
   def updateForce(b: Body) {
     if (body == null || (b == body)) return
-    if (isExternal) b.addForce(body)
+
+    if (isExternal)
+      b.addForce(body)
     else {
       val s: Double = q.sideLength
       val d: Double = body.distance(b)
-      if ((s / d) < THETA) b.addForce(body)
+      if ((s / d) < THETA)
+        b.addForce(body)
       else {
         NW.updateForce(b)
         NE.updateForce(b)

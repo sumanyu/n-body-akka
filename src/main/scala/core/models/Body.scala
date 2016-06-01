@@ -14,7 +14,7 @@ case class Body(position: Vector2D,
     val x = (position.x * mass + that.position.x * that.mass) / totalMass
     val y = (position.y * mass + that.position.y * that.mass) / totalMass
 
-    Body(Vector2D(x, y), Vector2D(0, 0), Vector2D(0, 0), totalMass, color)
+    copy(Vector2D(x, y), Vector2D(0, 0), Vector2D(0, 0), totalMass)
   }
 
   def addForce(that: Body): Body = {

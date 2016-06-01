@@ -75,7 +75,7 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
     executionTime += b
     counter -= 1
 
-    if (counter == 0) {
+    if (counter == 0) { //TODO: Graceful shutdown
       println("Number of bodies: " + bodies.size)
       println("Discretized time step for calculation, DT " + DT)
       println("The number of time steps in the simulation: " + numberOfSteps)
@@ -89,12 +89,13 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
     */
   def addForces() {
     val tree: BHTree = new BHTree(q)
+    val bodiesInQuad = bodies.filter(q.contains)
 
-    bodies.filter(q.contains).foreach { body =>
+    bodiesInQuad.foreach { body =>
       tree.insert(body)
     }
 
-    bodies.filter(q.contains).foreach { body =>
+    bodiesInQuad.foreach { body =>
       body.resetForce
       tree.updateForce(body)
       body.update

@@ -13,14 +13,12 @@ case class Quad(midpoint: Vector2D, sideLength: Double) {
       that.y >= midpoint.y - halfSide
   }
 
-  def contains(that: Body): Boolean = {
-    contains(that.position)
-  }
+  def contains(that: Body): Boolean = contains(that.position)
 
-  def northWest = new Quad(Vector2D(midpoint.x - sideLength, midpoint.y + sideLength) / 4.0, halfSideLength)
-  def northEast = new Quad(Vector2D(midpoint.x + sideLength, midpoint.y + sideLength) / 4.0, halfSideLength)
-  def southWest = new Quad(Vector2D(midpoint.x - sideLength, midpoint.y - sideLength) / 4.0, halfSideLength)
-  def southEast = new Quad(Vector2D(midpoint.x + sideLength, midpoint.y - sideLength) / 4.0, halfSideLength)
+  def northWest = Quad(Vector2D(midpoint.x - sideLength, midpoint.y + sideLength) / 4.0, halfSideLength)
+  def northEast = Quad(Vector2D(midpoint.x + sideLength, midpoint.y + sideLength) / 4.0, halfSideLength)
+  def southWest = Quad(Vector2D(midpoint.x - sideLength, midpoint.y - sideLength) / 4.0, halfSideLength)
+  def southEast = Quad(Vector2D(midpoint.x + sideLength, midpoint.y - sideLength) / 4.0, halfSideLength)
 }
 
 object Quad {
