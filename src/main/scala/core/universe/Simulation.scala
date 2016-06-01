@@ -5,6 +5,7 @@ import java.awt.Color
 import core.algorithms.NBodyAlgorithm
 import core.models.{Body, Vector2D}
 import core.universe.UniverseConstants._
+import collection.JavaConverters._
 
 class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
@@ -21,11 +22,15 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
     */
   def initializeBodies() {
-    bodies :+ generateSun()
+    bodies +:= generateSun()
 
     (0 until numberOfBodies).foreach { i =>
-      bodies :+ generateRandomBody()
+      bodies +:= generateRandomBody()
     }
+  }
+
+  def getJavaBodies() = {
+    bodies.asJava
   }
 
   def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
@@ -39,10 +44,12 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     val velocityX: Double = -1 * Math.signum(positionY) * Math.cos(thetav) * magv
     val velocityY: Double = Math.signum(positionX) * Math.sin(thetav) * magv
     val mass: Double = Math.random * SOLAR_MASS * 10 + 1e20
+
     val red: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
     val blue: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
     val green: Int = 255
     val color: Color = new Color(red, green, blue)
+
     Body(Vector2D(positionX, positionY), Vector2D(velocityX, velocityY), Vector2D(0, 0), mass, color)
   }
 
@@ -68,11 +75,11 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     * Runs one simulation step of the simulation.
     */
   def simulate() {
-    val a: Long = System.nanoTime
+    val t0: Long = System.nanoTime
     bodies = nBodyAlgorithm.updateBodies(bodies)
-    val b: Long = System.nanoTime - a
+    val deltaTime: Long = System.nanoTime - t0
 
-    executionTime += b
+    executionTime += deltaTime
     counter -= 1
 
     if (counter == 0) { //TODO: Graceful shutdown

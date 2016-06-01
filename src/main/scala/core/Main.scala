@@ -7,9 +7,8 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import core.algorithms.naive.NaiveQuadraticMethod
-import core.gui.GUI
 import core.http.HttpRoute
-import core.universe.Simulation
+import core.universe.{UniverseConstants, Simulation}
 
 object Main extends App with HttpRoute {
 
@@ -28,5 +27,5 @@ object Main extends App with HttpRoute {
 
   val naiveQuadraticMethod = new NaiveQuadraticMethod
   val simulation: Simulation = new Simulation(gnumBodies, numSteps, naiveQuadraticMethod)
-  val gui = new GUI(simulation)
+  val gui = new JavaGUI(simulation, UniverseConstants.UNIVERSE_RADIUS)
 }
