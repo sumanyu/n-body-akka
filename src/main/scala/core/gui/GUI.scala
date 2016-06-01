@@ -10,13 +10,18 @@ import core.universe.{Simulation, UniverseConstants}
 
 
 class GUI(simulation: Simulation) extends JFrame {
+
   private var simulate: Boolean = false
+
   private var slider: JSlider = null
   private var showDistance: JCheckBox = null
   private var showLines: JCheckBox = null
   private var showVelocity: JCheckBox = null
 
-//  this("N-body Simulation")
+//  this()
+
+  super.setTitle("N-body Simulation")
+  super.frameInit()
 
   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   buildFrameContents()

@@ -5,34 +5,30 @@ import java.awt.Color
 import core.models.{BHTree, Body, Quad, Vector2D}
 import core.universe.UniverseConstants._
 
-import scala.collection.mutable.ListBuffer
-
 class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
 
-  val bodies = new ListBuffer[Body]
+  var bodies = Set[Body]()
   private val q: Quad = Quad(0, 0, 2 * UNIVERSE_RADIUS)
 
-  private val numSteps: Int = numberOfSteps
   private var counter: Int = numberOfSteps
   private var executionTime: Long = 0
 
-  initBodies(numberOfBodies)
+  initializeBodies()
 
   /**
     * Initializes the bodies position, velocity and mass.
     *
     * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
-    *
-    * @param amountOfBodies the number of bodies to initialize.
     */
-  def initBodies(amountOfBodies: Int) {
-    val sun: Body = new Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
-    bodies += sun
+  def initializeBodies() {
+    bodies += generateSun()
 
-    (0 until amountOfBodies).foreach { i =>
+    (0 until numberOfBodies).foreach { i =>
       bodies += generateRandomBody()
     }
   }
+
+  def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
 
   def generateRandomBody() = {
     val positionX: Double = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
@@ -82,7 +78,7 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
     if (counter == 0) {
       println("Number of bodies: " + bodies.size)
       println("Discretized time step for calculation, DT " + DT)
-      println("The number of time steps in the simulation: " + numSteps)
+      println("The number of time steps in the simulation: " + numberOfSteps)
       println("Execution time: " + executionTime * 1e-6 + " milliseconds")
       System.exit(1)
     }
