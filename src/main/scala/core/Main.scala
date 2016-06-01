@@ -27,6 +27,6 @@ object Main extends App with HttpRoute {
   val numSteps: Int = JOptionPane.showInputDialog(null, "Number of time steps in the simulation: ").toInt
 
   val naiveQuadraticMethod = new NaiveQuadraticMethod
-  val sim: Simulation = new Simulation(gnumBodies, numSteps, naiveQuadraticMethod)
-  val gui = new GUI(sim)
+  val simulation: Simulation = new Simulation(gnumBodies, numSteps, naiveQuadraticMethod)
+  val gui = new GUI(simulation)
 }

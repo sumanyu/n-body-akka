@@ -9,7 +9,9 @@ import core.models.{Body, Vector2D}
 import core.universe.{Simulation, UniverseConstants}
 
 
-class GUI(simulation: Simulation) extends JFrame {
+class GUI(simulation: Simulation,
+          universeRadius: Double = UniverseConstants.UNIVERSE_RADIUS,
+          drawSize: Int = 500) extends JFrame {
 
   private var simulate: Boolean = false
 
@@ -17,8 +19,6 @@ class GUI(simulation: Simulation) extends JFrame {
   private var showDistance: JCheckBox = null
   private var showLines: JCheckBox = null
   private var showVelocity: JCheckBox = null
-
-//  this()
 
   super.setTitle("N-body Simulation")
   super.frameInit()
@@ -34,7 +34,7 @@ class GUI(simulation: Simulation) extends JFrame {
   private def buildFrameContents() {
     val pane: Container = getContentPane
 
-    val pf: PaintFrame = new PaintFrame(UniverseConstants.UNIVERSE_RADIUS, drawSize = 500, simulation)
+    val pf: PaintFrame = new PaintFrame
     pane.add(pf, BorderLayout.SOUTH)
 
     val options: JPanel = new JPanel(new BorderLayout)
@@ -81,7 +81,7 @@ class GUI(simulation: Simulation) extends JFrame {
     })
   }
 
-  private class PaintFrame(universeRadius: Double, drawSize: Int, sim: Simulation) extends JPanel {
+  private class PaintFrame extends JPanel {
 
     setPreferredSize(new Dimension(drawSize, drawSize))
     val scale = drawSize / (universeRadius * 2)
@@ -97,7 +97,8 @@ class GUI(simulation: Simulation) extends JFrame {
       g.setColor(Color.WHITE)
       g.drawOval(0, 0, normalizedUniverseRadius * 2, normalizedUniverseRadius * 2)
 
-      for (b <- sim.bodies) {
+      val bodies = simulation.bodies
+      for (b <- bodies) {
         g.setColor(b.color)
         val x: Int = (b.position.x * scale + normalizedUniverseRadius).toInt
         val y: Int = (b.position.y * scale + normalizedUniverseRadius).toInt
@@ -118,7 +119,7 @@ class GUI(simulation: Simulation) extends JFrame {
       }
 
       if (simulate)
-        sim.simulate()
+        simulation.simulate()
 
       repaint()
     }
