@@ -10,3 +10,7 @@ case class Vector2D(x: Double, y: Double) extends {
 
   override def toString() = s"(${x}, ${y})"
 }
+
+object Vector2D {
+  val Zero = Vector2D(0, 0)
+}

@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
+import core.algorithms.naive.NaiveQuadraticMethod
 import core.gui.GUI
 import core.http.HttpRoute
 import core.universe.Simulation
@@ -24,6 +25,8 @@ object Main extends App with HttpRoute {
 
   val gnumBodies: Int = JOptionPane.showInputDialog(null, "Enter amount of bodies").toInt - 1
   val numSteps: Int = JOptionPane.showInputDialog(null, "Number of time steps in the simulation: ").toInt
-  val sim: Simulation = new Simulation(gnumBodies, numSteps)
+
+  val naiveQuadraticMethod = new NaiveQuadraticMethod
+  val sim: Simulation = new Simulation(gnumBodies, numSteps, naiveQuadraticMethod)
   val gui = new GUI(sim)
 }

@@ -2,13 +2,13 @@ package core.universe
 
 import java.awt.Color
 
-import core.models.{BHTree, Body, Quad, Vector2D}
+import core.algorithms.NBodyAlgorithm
+import core.models.{Body, Vector2D}
 import core.universe.UniverseConstants._
 
-class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
+class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
   var bodies = Set[Body]()
-  private val q: Quad = Quad(0, 0, 2 * UNIVERSE_RADIUS)
 
   private var counter: Int = numberOfSteps
   private var executionTime: Long = 0
@@ -60,7 +60,7 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
     */
   def circlev(rx: Double, ry: Double): Double = {
     val r2: Double = Math.sqrt(rx * rx + ry * ry)
-    val numerator: Double = (GRAVITATION) * 1e6 * SOLAR_MASS
+    val numerator: Double = GRAVITATION * 1e6 * SOLAR_MASS
     Math.sqrt(numerator / r2)
   }
 
@@ -69,7 +69,7 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
     */
   def simulate() {
     val a: Long = System.nanoTime
-    addForces()
+    bodies = nBodyAlgorithm.updateBodies(bodies.toIndexedSeq).toSet
     val b: Long = System.nanoTime - a
 
     executionTime += b
@@ -81,24 +81,6 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int) {
       println("The number of time steps in the simulation: " + numberOfSteps)
       println("Execution time: " + executionTime * 1e-6 + " milliseconds")
       System.exit(1)
-    }
-  }
-
-  /**
-    * Barnes Hut algorithm.
-    */
-  def addForces() {
-    val tree: BHTree = new BHTree(q)
-    val bodiesInQuad = bodies.filter(q.contains)
-
-    bodiesInQuad.foreach { body =>
-      tree.insert(body)
-    }
-
-    bodiesInQuad.foreach { body =>
-      body.resetForce
-      tree.updateForce(body)
-      body.update
     }
   }
 }

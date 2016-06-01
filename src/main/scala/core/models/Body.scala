@@ -1,11 +1,13 @@
 package core.models
 
 import java.awt.Color
+
 import core.universe.UniverseConstants._
+import Vector2D._
 
 case class Body(position: Vector2D,
-                velocity: Vector2D = Vector2D(0.0, 0.0),
-                force: Vector2D = Vector2D(0.0, 0.0),
+                velocity: Vector2D = Zero,
+                force: Vector2D = Zero,
                 mass: Double = 0,
                 color: Color) {
 
@@ -14,7 +16,7 @@ case class Body(position: Vector2D,
     val x = (position.x * mass + that.position.x * that.mass) / totalMass
     val y = (position.y * mass + that.position.y * that.mass) / totalMass
 
-    copy(Vector2D(x, y), Vector2D(0, 0), Vector2D(0, 0), totalMass)
+    copy(Vector2D(x, y), Zero, Zero, totalMass)
   }
 
   def addForce(that: Body): Body = {
@@ -31,10 +33,10 @@ case class Body(position: Vector2D,
   }
 
   def resetForce: Body = {
-    copy(force = Vector2D(0, 0))
+    copy(force = Zero)
   }
 
-  def update: Body = {
+  def updateStateVariables: Body = {
     val deltaVelocity = force / mass * DT
     val deltaPosition = (velocity + (deltaVelocity / 2.0)) * DT
     copy(position = this.position + deltaPosition, velocity = this.velocity + deltaVelocity)
