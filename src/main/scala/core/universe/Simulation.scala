@@ -8,7 +8,7 @@ import core.universe.UniverseConstants._
 
 class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
-  var bodies = Set[Body]()
+  var bodies = IndexedSeq[Body]()
 
   private var counter: Int = numberOfSteps
   private var executionTime: Long = 0
@@ -21,10 +21,10 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
     */
   def initializeBodies() {
-    bodies += generateSun()
+    bodies :+ generateSun()
 
     (0 until numberOfBodies).foreach { i =>
-      bodies += generateRandomBody()
+      bodies :+ generateRandomBody()
     }
   }
 
@@ -69,7 +69,7 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     */
   def simulate() {
     val a: Long = System.nanoTime
-    bodies = nBodyAlgorithm.updateBodies(bodies.toIndexedSeq).toSet
+    bodies = nBodyAlgorithm.updateBodies(bodies)
     val b: Long = System.nanoTime - a
 
     executionTime += b

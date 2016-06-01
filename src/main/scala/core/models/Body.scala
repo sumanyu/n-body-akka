@@ -19,13 +19,14 @@ case class Body(position: Vector2D,
     copy(Vector2D(x, y), Zero, Zero, totalMass)
   }
 
+  //impact of that on this
   def addForce(that: Body): Body = {
     val distance = this.position.distance(that.position)
     val forceMagnitude = (GRAVITATION * that.mass * mass) / Math.pow(distance, 2)
-    val normalizedDirection = (that.position - position) / distance
-    val deltaForce = normalizedDirection * forceMagnitude
+    val direction = that.position - position
+    val deltaForce = direction * forceMagnitude / distance
 
-    copy(force = deltaForce + force)
+    copy(force = force + deltaForce)
   }
 
   def distance(that: Body): Double = {

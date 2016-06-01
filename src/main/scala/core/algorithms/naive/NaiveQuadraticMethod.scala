@@ -2,7 +2,6 @@ package core.algorithms.naive
 
 import core.algorithms.NBodyAlgorithm
 import core.models.Body
-import core.universe.UniverseConstants
 
 class NaiveQuadraticMethod extends NBodyAlgorithm {
   def updateBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
@@ -10,14 +9,27 @@ class NaiveQuadraticMethod extends NBodyAlgorithm {
   }
 
   private def calculateForces(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
-    bodies.dropRight(1).map { b1 =>
-      bodies.tail.map { b2 =>
-        val distance = b1.distance(b2)
-        val magnitude = (UniverseConstants.GRAVITATION * b1.mass * b2.mass) / math.pow(distance, 2)
-        val direction = b2.position - b1.position
+    var bodiesMap: Map[Int, Body] = bodies.zipWithIndex.map { case (body, idx) => idx -> body }.toMap
 
+    bodies.indices.dropRight(1).foreach { i =>
+      bodies.indices.tail.foreach { j =>
+        val bi = bodiesMap(i)
+        val bj = bodiesMap(j)
+
+        bodiesMap += i -> bi.addForce(bj)
+        bodiesMap += j -> bj.addForce(bi)
+
+//        val distance = bi.distance(bj)
+//        val magnitude = (UniverseConstants.GRAVITATION * bi.mass * bj.mass) / math.pow(distance, 2)
+//        val direction = bj.position - bi.position
+//        val deltaForce = direction * magnitude / distance
+//
+//        bodiesMap += i -> (bi.force + deltaForce)
+//        bodiesMap += j -> (bj.force - deltaForce)
       }
     }
+
+    bodiesMap.values.toIndexedSeq
   }
 
   private def moveBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
