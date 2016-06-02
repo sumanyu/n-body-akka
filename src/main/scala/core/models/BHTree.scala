@@ -69,12 +69,12 @@ class BHTree(q: Quad) {
     if (body == null || (b == body)) return
 
     if (isExternal)
-      b.addForce(body)
+      b.addForceFrom(body)
     else {
       val s: Double = q.sideLength
       val d: Double = body.distance(b)
       if ((s / d) < THETA)
-        b.addForce(body)
+        b.addForceFrom(body)
       else {
         NW.updateForce(b)
         NE.updateForce(b)

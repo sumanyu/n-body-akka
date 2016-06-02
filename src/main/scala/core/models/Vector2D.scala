@@ -1,5 +1,6 @@
 package core.models
 
+
 case class Vector2D(x: Double, y: Double) extends {
   def length: Double = math.sqrt(x*x + y*y)
   def +(that: Vector2D): Vector2D = copy(x + that.x, y + that.y)
@@ -12,5 +13,6 @@ case class Vector2D(x: Double, y: Double) extends {
 }
 
 object Vector2D {
+  type VectorType = Double
   val Zero = Vector2D(0, 0)
 }

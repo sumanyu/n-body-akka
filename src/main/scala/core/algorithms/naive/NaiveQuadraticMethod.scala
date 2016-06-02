@@ -16,16 +16,11 @@ class NaiveQuadraticMethod extends NBodyAlgorithm {
         val bi = bodiesMap(i)
         val bj = bodiesMap(j)
 
-        bodiesMap += i -> bi.addForce(bj)
-        bodiesMap += j -> bj.addForce(bi)
+        val forceOnBiByBj = bi.forceBetween(bj)
+        val forceOnBjByBi = forceOnBiByBj * -1
 
-//        val distance = bi.distance(bj)
-//        val magnitude = (UniverseConstants.GRAVITATION * bi.mass * bj.mass) / math.pow(distance, 2)
-//        val direction = bj.position - bi.position
-//        val deltaForce = direction * magnitude / distance
-//
-//        bodiesMap += i -> (bi.force + deltaForce)
-//        bodiesMap += j -> (bj.force - deltaForce)
+        bodiesMap += i -> bi.applyForce(forceOnBiByBj)
+        bodiesMap += j -> bj.applyForce(forceOnBjByBi)
       }
     }
 

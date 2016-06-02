@@ -9,7 +9,7 @@ case class Body(position: Vector2D,
                 velocity: Vector2D = Zero,
                 force: Vector2D = Zero,
                 mass: Double = 0,
-                color: Color) {
+                color: Color = Color.BLACK) {
 
   def +(that: Body): Body = {
     val totalMass = mass + that.mass
@@ -19,14 +19,22 @@ case class Body(position: Vector2D,
     copy(Vector2D(x, y), Zero, Zero, totalMass)
   }
 
-  //impact of that on this
-  def addForce(that: Body): Body = {
+  def forceBetween(that: Body): Vector2D = {
     val distance = this.position.distance(that.position)
-    val forceMagnitude = (GRAVITATION * that.mass * mass) / Math.pow(distance, 2)
-    val direction = that.position - position
-    val deltaForce = direction * forceMagnitude / distance
+    val squaredDistance = Math.pow(distance, 2)
+    val forceMagnitude = (GRAVITATION * that.mass * mass) / squaredDistance
+    val unitDirection = (that.position - position) / distance
 
-    copy(force = force + deltaForce)
+    unitDirection * forceMagnitude
+  }
+
+  def applyForce(_force: Vector2D): Body = {
+    copy(force = force + _force)
+  }
+
+  //impact of that on this
+  def addForceFrom(that: Body): Body = {
+    copy(force = force + forceBetween(that))
   }
 
   def distance(that: Body): Double = {
