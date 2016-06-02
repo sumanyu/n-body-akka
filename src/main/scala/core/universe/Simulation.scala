@@ -37,19 +37,23 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
 
   def generateRandomBody() = {
     val position = Vector2D(generatePosition, generatePosition)
-
-    val mag: Double = circleInitialization(position.x, position.y)
-    val absAngle: Double = Math.atan(Math.abs(position.y / position.x))
-    val theta: Double = Math.PI / 2 - absAngle
-
-    val velocity = Vector2D(-1 * Math.signum(position.y) * Math.cos(theta) * mag,
-      Math.signum(position.x) * Math.sin(theta) * mag)
-
-    val mass: Double = Math.random * SOLAR_MASS * 10 + 1e20
+    val velocity = generateVelocity(position)
+    val mass: Double = generateMass
     val color: Color = generateColor(mass)
 
     Body(position, velocity, force = Vector2D(0, 0), mass, color)
   }
+
+  def generateVelocity(position: Vector2D) = {
+    val mag: Double = circleInitialization(position.x, position.y)
+    val absAngle: Double = Math.atan(Math.abs(position.y / position.x))
+    val theta: Double = Math.PI / 2 - absAngle
+
+    Vector2D(-1 * Math.signum(position.y) * Math.cos(theta) * mag,
+      Math.signum(position.x) * Math.sin(theta) * mag)
+  }
+
+  def generateMass = Math.random * SOLAR_MASS * 10 + 1e20
 
   def generateColor(mass: Double) = {
     val red: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
@@ -82,9 +86,9 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     * Runs one simulation step of the simulation.
     */
   def simulate() {
-    val t0: Long = System.nanoTime
-    bodies = nBodyAlgorithm.updateBodies(bodies)
-    val deltaTime: Long = System.nanoTime - t0
+    val deltaTime = time {
+      bodies = nBodyAlgorithm.updateBodies(bodies)
+    }
 
     executionTime += deltaTime
     counter -= 1
@@ -96,5 +100,11 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
       println("Execution time: " + executionTime * 1e-6 + " milliseconds")
       System.exit(1)
     }
+  }
+
+  def time(f: => Unit): Long = {
+    val t0: Long = System.nanoTime
+    f
+    System.nanoTime - t0
   }
 }
