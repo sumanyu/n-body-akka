@@ -63,11 +63,11 @@ public class JavaGUI extends JFrame {
                 g.drawOval(x, y, 2, 2);
             }
 
-//            try {
-//                Thread.sleep(50);
-//            } catch(InterruptedException ex) {
-//                Thread.currentThread().interrupt();
-//            }
+            try {
+                Thread.sleep(10);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
 
             repaint();
         }

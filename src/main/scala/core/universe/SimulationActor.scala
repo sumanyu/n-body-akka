@@ -9,6 +9,61 @@ import core.universe.UniverseConstants._
 
 import scala.concurrent.duration.{FiniteDuration, _}
 
+class SimulationActor(numberOfBodies: Int,
+                      nBodyAlgorithm: NBodyAlgorithm,
+                      systemState: SystemState) extends Actor with ActorLogging {
+
+  import SimulationActor._
+
+  implicit val executionContext = context.dispatcher
+
+  var bodies: IndexedSeq[Body] = initializeBodies
+
+  updateSystemStateEvery(5.milliseconds)
+
+  def receive = {
+    case Tick =>
+      simulateOneStep()
+      updateSystemState()
+  }
+
+  /**
+    * Initializes the bodies position, velocity and mass.
+    *
+    * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
+    */
+  def initializeBodies: IndexedSeq[Body] = {
+    (1 until numberOfBodies).map { i => generateRandomBody() } :+ generateSun()
+  }
+
+  def simulateOneStep() {
+    val deltaTime = time {
+      bodies = nBodyAlgorithm.updateBodies(bodies)
+    }
+
+    log.info("Execution time: " + deltaTime * 1e-6 + " milliseconds")
+  }
+
+  def time(f: => Unit): Long = {
+    val t0: Long = System.nanoTime
+    f
+    System.nanoTime - t0
+  }
+
+  private def updateSystemStateEvery(duration: FiniteDuration) = {
+    context.system.scheduler.schedule(0.milliseconds,
+      duration,
+      self,
+      Tick)
+  }
+
+  def updateSystemState() = {
+    systemState.setNewState(bodies)
+  }
+
+}
+
+
 object SimulationActor {
 
   case object Tick
@@ -59,56 +114,3 @@ object SimulationActor {
   }
 }
 
-class SimulationActor(numberOfBodies: Int,
-                      nBodyAlgorithm: NBodyAlgorithm,
-                      systemState: SystemState) extends Actor with ActorLogging {
-
-  import SimulationActor._
-
-  implicit val executionContext = context.dispatcher
-
-  var bodies: IndexedSeq[Body] = initializeBodies
-
-  updateSystemStateEvery(10.milliseconds)
-
-  def receive = {
-    case Tick =>
-      simulateOneStep()
-      updateSystemState()
-  }
-
-  /**
-    * Initializes the bodies position, velocity and mass.
-    *
-    * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
-    */
-  def initializeBodies: IndexedSeq[Body] = {
-     (1 until numberOfBodies).map { i => generateRandomBody() } :+ generateSun()
-  }
-
-  def simulateOneStep() {
-    val deltaTime = time {
-      bodies = nBodyAlgorithm.updateBodies(bodies)
-    }
-
-    log.info("Execution time: " + deltaTime * 1e-6 + " milliseconds")
-  }
-
-  def time(f: => Unit): Long = {
-    val t0: Long = System.nanoTime
-    f
-    System.nanoTime - t0
-  }
-
-  private def updateSystemStateEvery(duration: FiniteDuration) = {
-    context.system.scheduler.schedule(0.milliseconds,
-      duration,
-      self,
-      Tick)
-  }
-
-  def updateSystemState() = {
-    systemState.setNewState(bodies)
-  }
-
-}

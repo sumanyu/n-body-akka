@@ -24,9 +24,9 @@ object Main extends App with HttpRoute {
 
   val numBodies = JOptionPane.showInputDialog(null, "Enter amount of bodies").toInt
 
-  val naiveQuadraticMethod = new NaiveQuadraticMethod
   val systemState = new SystemState //shared between GUI and processing
 
+  val naiveQuadraticMethod = new NaiveQuadraticMethod
   val simulationActor = system.actorOf(SimulationActor.props(numBodies, naiveQuadraticMethod, systemState))
   val gui = new JavaGUI(systemState, UniverseConstants.UNIVERSE_RADIUS)
 }
