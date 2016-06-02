@@ -7,11 +7,11 @@ import core.models.{Body, Vector2D}
 import core.universe.UniverseConstants._
 import collection.JavaConverters._
 
-class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyAlgorithm) {
+class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
   var bodies = IndexedSeq[Body]()
 
-  private var counter: Int = numberOfSteps
+//  private var counter: Int = numberOfSteps
   private var executionTime: Long = 0
 
   initializeBodies()
@@ -91,15 +91,15 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     }
 
     executionTime += deltaTime
-    counter -= 1
-
-    if (counter == 0) { //TODO: Graceful shutdown
-      println("Number of bodies: " + bodies.size)
-      println("Discretized time step for calculation, DT " + DT)
-      println("The number of time steps in the simulation: " + numberOfSteps)
-      println("Execution time: " + executionTime * 1e-6 + " milliseconds")
-      System.exit(1)
-    }
+//    counter -= 1
+//
+//    if (counter == 0) { //TODO: Graceful shutdown
+//      println("Number of bodies: " + bodies.size)
+//      println("Discretized time step for calculation, DT " + DT)
+//      println("The number of time steps in the simulation: " + numberOfSteps)
+//      println("Execution time: " + executionTime * 1e-6 + " milliseconds")
+//      System.exit(1)
+//    }
   }
 
   def time(f: => Unit): Long = {

@@ -64,7 +64,7 @@ public class JavaGUI extends JFrame {
             }
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(25);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }

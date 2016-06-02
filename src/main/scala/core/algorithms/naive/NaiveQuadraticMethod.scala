@@ -11,8 +11,9 @@ class NaiveQuadraticMethod extends NBodyAlgorithm {
   private def calculateForces(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
     var bodiesMap: Map[Int, Body] = bodies.zipWithIndex.map { case (body, idx) => idx -> body }.toMap
 
+    val length = bodies.length
     bodies.indices.dropRight(1).foreach { i =>
-      bodies.indices.tail.foreach { j =>
+      (i+1 until length).foreach { j =>
         val bi = bodiesMap(i)
         val bj = bodiesMap(j)
 

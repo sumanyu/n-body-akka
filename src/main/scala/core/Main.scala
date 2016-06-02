@@ -23,9 +23,8 @@ object Main extends App with HttpRoute {
   val bindingFuture = Http().bindAndHandle(route, host, port)
 
   val gnumBodies: Int = JOptionPane.showInputDialog(null, "Enter amount of bodies").toInt - 1
-  val numSteps: Int = JOptionPane.showInputDialog(null, "Number of time steps in the simulation: ").toInt
 
   val naiveQuadraticMethod = new NaiveQuadraticMethod
-  val simulation: Simulation = new Simulation(gnumBodies, numSteps, naiveQuadraticMethod)
+  val simulation: Simulation = new Simulation(gnumBodies, naiveQuadraticMethod)
   val gui = new JavaGUI(simulation, UniverseConstants.UNIVERSE_RADIUS)
 }
