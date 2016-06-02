@@ -36,22 +36,29 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
   def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
 
   def generateRandomBody() = {
-    val positionX: Double = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
-    val positionY: Double = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
-    val magv: Double = circlev(positionX, positionY)
-    val absangle: Double = Math.atan(Math.abs(positionY / positionX))
-    val thetav: Double = Math.PI / 2 - absangle
-    val velocityX: Double = -1 * Math.signum(positionY) * Math.cos(thetav) * magv
-    val velocityY: Double = Math.signum(positionX) * Math.sin(thetav) * magv
-    val mass: Double = Math.random * SOLAR_MASS * 10 + 1e20
+    val position = Vector2D(generatePosition, generatePosition)
 
+    val mag: Double = circleInitialization(position.x, position.y)
+    val absAngle: Double = Math.atan(Math.abs(position.y / position.x))
+    val theta: Double = Math.PI / 2 - absAngle
+
+    val velocity = Vector2D(-1 * Math.signum(position.y) * Math.cos(theta) * mag,
+      Math.signum(position.x) * Math.sin(theta) * mag)
+
+    val mass: Double = Math.random * SOLAR_MASS * 10 + 1e20
+    val color: Color = generateColor(mass)
+
+    Body(position, velocity, force = Vector2D(0, 0), mass, color)
+  }
+
+  def generateColor(mass: Double) = {
     val red: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
     val blue: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
     val green: Int = 255
-    val color: Color = new Color(red, green, blue)
-
-    Body(Vector2D(positionX, positionY), Vector2D(velocityX, velocityY), Vector2D(0, 0), mass, color)
+    new Color(red, green, blue)
   }
+
+  def generatePosition = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
 
   def exp(lambda: Double): Double = {
     -Math.log(1 - Math.random) / lambda
@@ -65,7 +72,7 @@ class Simulation(numberOfBodies: Int, numberOfSteps: Int, nBodyAlgorithm: NBodyA
     * @param ry y coordinate
     * @return position
     */
-  def circlev(rx: Double, ry: Double): Double = {
+  def circleInitialization(rx: Double, ry: Double): Double = {
     val r2: Double = Math.sqrt(rx * rx + ry * ry)
     val numerator: Double = GRAVITATION * 1e6 * SOLAR_MASS
     Math.sqrt(numerator / r2)
