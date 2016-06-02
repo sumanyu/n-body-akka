@@ -41,7 +41,7 @@ class SimulationActor(numberOfBodies: Int,
       bodies = nBodyAlgorithm.updateBodies(bodies)
     }
 
-    log.info("Execution time: " + deltaTime * 1e-6 + " milliseconds")
+//    log.info("Execution time: " + deltaTime * 1e-6 + " milliseconds")
   }
 
   def time(f: => Unit): Long = {
