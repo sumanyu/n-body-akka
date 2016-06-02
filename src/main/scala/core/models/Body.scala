@@ -28,22 +28,13 @@ case class Body(position: Vector2D,
     unitDirection * forceMagnitude
   }
 
-  def applyForce(_force: Vector2D): Body = {
-    copy(force = force + _force)
-  }
+  def applyForce(_force: Vector2D): Body = copy(force = force + _force)
 
-  //impact of that on this
-  def addForceFrom(that: Body): Body = {
-    copy(force = force + forceBetween(that))
-  }
+  def addForceFrom(that: Body): Body = copy(force = force + forceBetween(that))
 
-  def distance(that: Body): Double = {
-    this.position.distance(that.position)
-  }
+  def distance(that: Body): Double = this.position.distance(that.position)
 
-  def resetForce: Body = {
-    copy(force = Zero)
-  }
+  def resetForce: Body = copy(force = Zero)
 
   def updateStateVariables(): Body = {
     val deltaVelocity = force / mass * DISCRETIZED_TIME_STEP
