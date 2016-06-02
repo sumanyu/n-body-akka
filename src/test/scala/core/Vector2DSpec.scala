@@ -23,4 +23,34 @@ class Vector2DSpec extends BaseSpec {
       (v * -1).length shouldBe closeTo(v.length)
     }
   }
+
+  "distance" should "be symmetric" in {
+    randomVectorPairs.take(5).foreach { pair =>
+      val v1 = pair._1
+      val v2 = pair._2
+
+      v1.distance(v2) shouldBe closeTo(v2.distance(v1))
+    }
+  }
+
+  it should "be non-negative" in {
+    randomVectorPairs.take(5).foreach { pair =>
+      val v1 = pair._1
+      val v2 = pair._2
+
+      v1.distance(v2) should be >= 0.0
+    }
+  }
+
+  it should "be zero for distance between itself" in {
+    randomVectors.take(5).foreach { v =>
+      v.distance(v) shouldEqual 0.0
+    }
+  }
+
+  it should "preserve triangle inequality" in {
+    randomVectorTriplets.take(5).foreach { case (x, y, z) =>
+      x.distance(z) should be <= (x.distance(y) + y.distance(z))
+    }
+  }
 }

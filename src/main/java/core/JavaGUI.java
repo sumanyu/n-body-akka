@@ -62,6 +62,13 @@ public class JavaGUI extends JFrame {
                         b.position().y()*scale+universeRadius);
                 g.drawOval(x, y, 2, 2);
             }
+
+            try {
+                Thread.sleep(100);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
             simulation.simulate();
             repaint();
         }
