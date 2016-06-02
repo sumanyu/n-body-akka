@@ -10,8 +10,6 @@ import collection.JavaConverters._
 class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
   var bodies = IndexedSeq[Body]()
-
-//  private var counter: Int = numberOfSteps
   private var executionTime: Long = 0
 
   initializeBodies()
@@ -23,50 +21,48 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     */
   def initializeBodies() {
     bodies +:= generateSun()
-
-    (0 until numberOfBodies).foreach { i =>
-      bodies +:= generateRandomBody()
-    }
+    bodies ++= (0 until numberOfBodies).map { i => generateRandomBody() }
   }
 
-  def getJavaBodies() = {
+  //Useful inside JavaGUI
+  def getJavaBodies = {
     bodies.asJava
   }
 
   def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
 
   def generateRandomBody() = {
-    val position = Vector2D(generatePosition, generatePosition)
-    val velocity = generateVelocity(position)
-    val mass: Double = generateMass
-    val color: Color = generateColor(mass)
+    val position  = generatePositionVector
+    val velocity  = generateVelocity(position)
+    val mass      = generateMass
+    val color     = generateColor(mass)
 
     Body(position, velocity, force = Vector2D(0, 0), mass, color)
   }
+
+  def generatePositionVector = Vector2D(generatePosition, generatePosition)
+  def generatePosition       = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
 
   def generateVelocity(position: Vector2D) = {
     val mag: Double = circleInitialization(position.x, position.y)
     val absAngle: Double = Math.atan(Math.abs(position.y / position.x))
     val theta: Double = Math.PI / 2 - absAngle
 
-    Vector2D(-1 * Math.signum(position.y) * Math.cos(theta) * mag,
-      Math.signum(position.x) * Math.sin(theta) * mag)
+    Vector2D(-1 * Math.signum(position.y) * Math.cos(theta), Math.signum(position.x) * Math.sin(theta)) * mag
   }
 
   def generateMass = Math.random * SOLAR_MASS * 10 + 1e20
 
   def generateColor(mass: Double) = {
-    val red: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
-    val blue: Int = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
-    val green: Int = 255
+    def randomColor = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
+
+    val red   = randomColor
+    val blue  = randomColor
+    val green = 255
     new Color(red, green, blue)
   }
 
-  def generatePosition = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
-
-  def exp(lambda: Double): Double = {
-    -Math.log(1 - Math.random) / lambda
-  }
+  def exp(lambda: Double): Double = -Math.log(1 - Math.random) / lambda
 
   /**
     * This method will help to initialize the bodies in circular
@@ -77,8 +73,8 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     * @return position
     */
   def circleInitialization(rx: Double, ry: Double): Double = {
-    val r2: Double = Math.sqrt(rx * rx + ry * ry)
-    val numerator: Double = GRAVITATION * 1e6 * SOLAR_MASS
+    val r2 = Math.sqrt(rx * rx + ry * ry)
+    val numerator = GRAVITATION * 1e6 * SOLAR_MASS
     Math.sqrt(numerator / r2)
   }
 

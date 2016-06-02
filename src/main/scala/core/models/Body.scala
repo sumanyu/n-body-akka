@@ -46,8 +46,8 @@ case class Body(position: Vector2D,
   }
 
   def updateStateVariables: Body = {
-    val deltaVelocity = force / mass * DT
-    val deltaPosition = (velocity + (deltaVelocity / 2.0)) * DT
+    val deltaVelocity = force / mass * TIME_STEP
+    val deltaPosition = (velocity + (deltaVelocity / 2.0)) * TIME_STEP
     copy(position = this.position + deltaPosition, velocity = this.velocity + deltaVelocity)
   }
 }
