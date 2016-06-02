@@ -22,7 +22,5 @@ case class Quad(midpoint: Vector2D, sideLength: Double) {
 }
 
 object Quad {
-  def apply(x: Int, y: Int, sideLength: Double): Quad = {
-    Quad(Vector2D(x, y), sideLength)
-  }
+  def apply(x: Int, y: Int, sideLength: Double): Quad = Quad(Vector2D(x, y), sideLength)
 }

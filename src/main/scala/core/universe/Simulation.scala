@@ -73,12 +73,8 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     val deltaTime = time {
       bodies = nBodyAlgorithm.updateBodies(bodies)
     }
-
-    executionTime += deltaTime
-
-//      println("Discretized time step for calculation, DT " + DT)
-//      println("The number of time steps in the simulation: " + numberOfSteps)
-//      println("Execution time: " + executionTime * 1e-6 + " milliseconds")
+    
+    println("Execution time: " + deltaTime * 1e-6 + " milliseconds")
   }
 
   def time(f: => Unit): Long = {
