@@ -8,7 +8,7 @@ import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import core.algorithms.naive.NaiveQuadraticMethod
 import core.http.HttpRoute
-import core.universe.{UniverseConstants, Simulation}
+import core.universe.{SystemState, SimulationActor, UniverseConstants}
 
 object Main extends App with HttpRoute {
 
@@ -25,6 +25,8 @@ object Main extends App with HttpRoute {
   val numBodies = JOptionPane.showInputDialog(null, "Enter amount of bodies").toInt
 
   val naiveQuadraticMethod = new NaiveQuadraticMethod
-  val simulation: Simulation = new Simulation(numBodies, naiveQuadraticMethod)
-  val gui = new JavaGUI(simulation, UniverseConstants.UNIVERSE_RADIUS)
+  val systemState = new SystemState //shared between GUI and processing
+
+  val simulationActor = system.actorOf(SimulationActor.props(numBodies, naiveQuadraticMethod, systemState))
+  val gui = new JavaGUI(systemState, UniverseConstants.UNIVERSE_RADIUS)
 }

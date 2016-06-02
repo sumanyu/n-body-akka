@@ -2,31 +2,20 @@ package core.universe
 
 import java.awt.Color
 
+import akka.actor.{Actor, ActorLogging, Props}
 import core.algorithms.NBodyAlgorithm
 import core.models.{Body, Vector2D}
 import core.universe.UniverseConstants._
-import collection.JavaConverters._
 
-class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
+import scala.concurrent.duration.{FiniteDuration, _}
 
-  var bodies = IndexedSeq[Body]()
+object SimulationActor {
 
-  //Useful inside JavaGUI
-  def getJavaBodies = bodies.asJava
+  case object Tick
 
-  private var executionTime: Long = 0
+  def props(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm, systemState: SystemState) =
+    Props(new SimulationActor(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm, systemState: SystemState))
 
-  initializeBodies()
-
-  /**
-    * Initializes the bodies position, velocity and mass.
-    *
-    * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
-    */
-  def initializeBodies() {
-    bodies +:= generateSun()
-    bodies ++= (1 until numberOfBodies).map { i => generateRandomBody() }
-  }
 
   def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
 
@@ -68,13 +57,41 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     val green = 255
     new Color(red, green, blue)
   }
+}
+
+class SimulationActor(numberOfBodies: Int,
+                      nBodyAlgorithm: NBodyAlgorithm,
+                      systemState: SystemState) extends Actor with ActorLogging {
+
+  import SimulationActor._
+
+  implicit val executionContext = context.dispatcher
+
+  var bodies: IndexedSeq[Body] = initializeBodies
+
+  updateSystemStateEvery(10.milliseconds)
+
+  def receive = {
+    case Tick =>
+      simulateOneStep()
+      updateSystemState()
+  }
+
+  /**
+    * Initializes the bodies position, velocity and mass.
+    *
+    * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
+    */
+  def initializeBodies: IndexedSeq[Body] = {
+     (1 until numberOfBodies).map { i => generateRandomBody() } :+ generateSun()
+  }
 
   def simulateOneStep() {
     val deltaTime = time {
       bodies = nBodyAlgorithm.updateBodies(bodies)
     }
-    
-    println("Execution time: " + deltaTime * 1e-6 + " milliseconds")
+
+    log.info("Execution time: " + deltaTime * 1e-6 + " milliseconds")
   }
 
   def time(f: => Unit): Long = {
@@ -82,4 +99,16 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     f
     System.nanoTime - t0
   }
+
+  private def updateSystemStateEvery(duration: FiniteDuration) = {
+    context.system.scheduler.schedule(0.milliseconds,
+      duration,
+      self,
+      Tick)
+  }
+
+  def updateSystemState() = {
+    systemState.setNewState(bodies)
+  }
+
 }

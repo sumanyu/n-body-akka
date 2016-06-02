@@ -1,21 +1,21 @@
 package core;
 
 import core.models.Body;
-import core.universe.Simulation;
+import core.universe.SystemState;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class JavaGUI extends JFrame {
 
-    private Simulation simulation;
+    private SystemState systemState;
 
-    public JavaGUI(Simulation simulation, double universeRadius) {
+    public JavaGUI(SystemState systemState, double universeRadius) {
         super("N-body Simulation");
-        this.simulation = simulation;
+        this.systemState = systemState;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container pane = getContentPane();
-        PaintFrame pf = new PaintFrame(universeRadius, 500, simulation);
+        PaintFrame pf = new PaintFrame(universeRadius, 500, systemState);
         pane.add(pf, BorderLayout.CENTER);
         pack();
         setVisible(true);
@@ -23,7 +23,7 @@ public class JavaGUI extends JFrame {
 
     private class PaintFrame extends JPanel {
 
-        private Simulation sim;
+        private SystemState systemState;
         private int universeRadius;
 
         private double scale;
@@ -34,13 +34,13 @@ public class JavaGUI extends JFrame {
          *
          * @param universeRadius
          * @param drawSize
-         * @param sim
+         * @param systemState
          */
-        public PaintFrame(double universeRadius, int drawSize, Simulation sim) {
+        public PaintFrame(double universeRadius, int drawSize, SystemState systemState) {
             setPreferredSize(new Dimension(drawSize, drawSize));
             scale = drawSize/(universeRadius*2);
             this.universeRadius = (int) Math.round(universeRadius*scale);
-            this.sim = sim;
+            this.systemState = systemState;
         }
 
         /**
@@ -54,7 +54,7 @@ public class JavaGUI extends JFrame {
             g.fillRect(0, 0, universeRadius*2, universeRadius*2);
             g.setColor(Color.WHITE);
             g.drawOval(0, 0, universeRadius*2, universeRadius*2);
-            for(Body b : sim.getJavaBodies()) {
+            for(Body b : systemState.getJavaBodies()) {
                 g.setColor(b.color());
                 int x = (int) Math.round(
                         b.position().x()*scale+universeRadius);
@@ -63,13 +63,12 @@ public class JavaGUI extends JFrame {
                 g.drawOval(x, y, 2, 2);
             }
 
-            try {
-                Thread.sleep(25);
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
+//            try {
+//                Thread.sleep(50);
+//            } catch(InterruptedException ex) {
+//                Thread.currentThread().interrupt();
+//            }
 
-            simulation.simulateOneStep();
             repaint();
         }
     }
