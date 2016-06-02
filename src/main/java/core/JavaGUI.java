@@ -69,7 +69,7 @@ public class JavaGUI extends JFrame {
                 Thread.currentThread().interrupt();
             }
 
-            simulation.simulate();
+            simulation.simulateOneStep();
             repaint();
         }
     }

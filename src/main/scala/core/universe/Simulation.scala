@@ -10,6 +10,10 @@ import collection.JavaConverters._
 class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
   var bodies = IndexedSeq[Body]()
+
+  //Useful inside JavaGUI
+  def getJavaBodies = bodies.asJava
+
   private var executionTime: Long = 0
 
   initializeBodies()
@@ -21,12 +25,7 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     */
   def initializeBodies() {
     bodies +:= generateSun()
-    bodies ++= (0 until numberOfBodies).map { i => generateRandomBody() }
-  }
-
-  //Useful inside JavaGUI
-  def getJavaBodies = {
-    bodies.asJava
+    bodies ++= (1 until numberOfBodies).map { i => generateRandomBody() }
   }
 
   def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
@@ -42,6 +41,7 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
 
   def generatePositionVector = Vector2D(generatePosition, generatePosition)
   def generatePosition       = UNIVERSE_RADIUS * exp(-1.8) * (.5 - Math.random)
+  def exp(lambda: Double)    = -Math.log(1 - Math.random) / lambda
 
   def generateVelocity(position: Vector2D) = {
     val mag: Double = circleInitialization(position.x, position.y)
@@ -49,6 +49,13 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     val theta: Double = Math.PI / 2 - absAngle
 
     Vector2D(-1 * Math.signum(position.y) * Math.cos(theta), Math.signum(position.x) * Math.sin(theta)) * mag
+  }
+
+  //Helps initialize bodies in circular orbits around a central mass
+  def circleInitialization(rx: Double, ry: Double): Double = {
+    val r2 = Math.sqrt(rx * rx + ry * ry)
+    val numerator = GRAVITATION * 1e6 * SOLAR_MASS
+    Math.sqrt(numerator / r2)
   }
 
   def generateMass = Math.random * SOLAR_MASS * 10 + 1e20
@@ -62,40 +69,16 @@ class Simulation(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm) {
     new Color(red, green, blue)
   }
 
-  def exp(lambda: Double): Double = -Math.log(1 - Math.random) / lambda
-
-  /**
-    * This method will help to initialize the bodies in circular
-    * orbits around the central mass.
-    *
-    * @param rx x coordinate
-    * @param ry y coordinate
-    * @return position
-    */
-  def circleInitialization(rx: Double, ry: Double): Double = {
-    val r2 = Math.sqrt(rx * rx + ry * ry)
-    val numerator = GRAVITATION * 1e6 * SOLAR_MASS
-    Math.sqrt(numerator / r2)
-  }
-
-  /**
-    * Runs one simulation step of the simulation.
-    */
-  def simulate() {
+  def simulateOneStep() {
     val deltaTime = time {
       bodies = nBodyAlgorithm.updateBodies(bodies)
     }
 
     executionTime += deltaTime
-//    counter -= 1
-//
-//    if (counter == 0) { //TODO: Graceful shutdown
-//      println("Number of bodies: " + bodies.size)
+
 //      println("Discretized time step for calculation, DT " + DT)
 //      println("The number of time steps in the simulation: " + numberOfSteps)
 //      println("Execution time: " + executionTime * 1e-6 + " milliseconds")
-//      System.exit(1)
-//    }
   }
 
   def time(f: => Unit): Long = {

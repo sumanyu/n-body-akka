@@ -119,7 +119,7 @@ class GUI(simulation: Simulation,
       }
 
       if (simulate)
-        simulation.simulate()
+        simulation.simulateOneStep()
 
       repaint()
     }
