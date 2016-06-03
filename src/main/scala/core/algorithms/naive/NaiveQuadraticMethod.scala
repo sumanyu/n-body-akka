@@ -4,7 +4,12 @@ import core.algorithms.NBodyAlgorithm
 import core.models.Body
 
 class NaiveQuadraticMethod extends NBodyAlgorithm {
-  def updateBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = moveBodies(calculateForces(bodies))
+  def updateBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
+    if (bodies.isEmpty)
+      bodies
+    else
+      moveBodies(calculateForces(bodies))
+  }
 
   private def moveBodies(bodies: IndexedSeq[Body]) = bodies.map(_.updateStateVariables().resetForce)
 
