@@ -28,4 +28,8 @@ class NaiveQuadraticMethodSpec extends BaseSpec {
     resultBody1.position.x shouldBe > (0.0)
     resultBody2.position.x shouldBe < (1000000.0)
   }
+
+  it should "return empty sequence of bodies for empty input" in {
+    updateAlgorithm.updateBodies(IndexedSeq()) shouldBe empty
+  }
 }
