@@ -108,4 +108,12 @@ class Vector2DSpec extends BaseSpec {
 
     (v1 * 1) shouldEqual v1
   }
+
+  "scalar division" should "correctly scale individual components" in {
+    val vector = randomVector
+    val scaledVector = vector / 2
+
+    scaledVector.x shouldBe closeTo(vector.x/2.0)
+    scaledVector.y shouldBe closeTo(vector.y/2.0)
+  }
 }
