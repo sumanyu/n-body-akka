@@ -1,6 +1,6 @@
 package core
 
-import core.models.Vector2D
+import core.models.{Body, Vector2D}
 import org.scalatest.ShouldMatchers
 
 trait Helpers extends ShouldMatchers {
@@ -14,4 +14,10 @@ trait Helpers extends ShouldMatchers {
   def randomVectorPairs: Stream[(Vector2D, Vector2D)] = randomVectors.zip(randomVectors)
   def randomVectorTriplets: Stream[(Vector2D, Vector2D, Vector2D)] =
     (randomVector, randomVector, randomVector) #:: randomVectorTriplets
+
+  def randomBody = Body(
+    position = randomVector,
+    velocity = randomVector,
+    force = randomVector,
+    mass = randomScalar)
 }
