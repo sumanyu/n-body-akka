@@ -6,9 +6,9 @@ import core.models.Body
 class NaiveQuadraticMethod extends NBodyAlgorithm {
   def updateBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = moveBodies(calculateForces(bodies))
 
-  private def moveBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = bodies.map(_.updateStateVariables().resetForce)
+  private def moveBodies(bodies: IndexedSeq[Body]) = bodies.map(_.updateStateVariables().resetForce)
 
-  private def calculateForces(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
+  private def calculateForces(bodies: IndexedSeq[Body]) = {
     var bodiesMap: Map[Int, Body] = bodies.zipWithIndex.map { case (body, idx) => idx -> body }.toMap
 
     val length = bodies.length

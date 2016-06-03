@@ -7,9 +7,9 @@ trait Helpers extends ShouldMatchers {
   private val Tolerance = 0.01
   def closeTo(testValue: Double) = testValue +- Tolerance
 
-  def randomNumber = math.random - 0.5
+  def randomScalar = math.random - 0.5
 
-  def randomVector = Vector2D(randomNumber, randomNumber)
+  def randomVector = Vector2D(randomScalar, randomScalar)
   def randomVectors: Stream[Vector2D] = randomVector #:: randomVectors
   def randomVectorPairs: Stream[(Vector2D, Vector2D)] = randomVectors.zip(randomVectors)
   def randomVectorTriplets: Stream[(Vector2D, Vector2D, Vector2D)] =

@@ -27,11 +27,8 @@ class SimulationActor(numberOfBodies: Int,
       updateSystemState()
   }
 
-  /**
-    * Initializes the bodies position, velocity and mass.
-    *
-    * Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
-    */
+  //Initializes the bodies position, velocity and mass.
+  //Source: http://physics.princeton.edu/~fpretori/Nbody/intro.htm
   def initializeBodies: IndexedSeq[Body] = {
     (1 until numberOfBodies).map { i => generateRandomBody() } :+ generateSun()
   }
@@ -60,17 +57,15 @@ class SimulationActor(numberOfBodies: Int,
   def updateSystemState() = {
     systemState.setNewState(bodies)
   }
-
 }
 
 
 object SimulationActor {
 
-  case object Tick
+  private[SimulationActor] case object Tick
 
   def props(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm, systemState: SystemState) =
     Props(new SimulationActor(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm, systemState: SystemState))
-
 
   def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
 

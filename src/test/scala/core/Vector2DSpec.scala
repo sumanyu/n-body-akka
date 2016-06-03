@@ -4,15 +4,15 @@ import core.models.Vector2D
 
 class Vector2DSpec extends BaseSpec {
 
-  "length" should "be zero for zero complex number" in {
-    Vector2D(0, 0).length shouldBe closeTo(0.0)
+  "length" should "be zero for zero vector" in {
+    Vector2D.Zero.length shouldBe closeTo(0.0)
   }
 
-  it should "be correct for an arbitrary complex number" in {
+  it should "be correct for an arbitrary vector" in {
     Vector2D(8, 6).length shouldBe closeTo(10)
   }
 
-  it should "be symmetric in re and im" in {
+  it should "be symmetric in x and y" in {
     randomVectors.take(5).foreach { v =>
       Vector2D(v.y, v.x).length shouldBe closeTo(v.length)
     }

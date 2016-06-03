@@ -1,4 +1,4 @@
-package core;
+package core.gui;
 
 import core.models.Body;
 import core.universe.SystemState;

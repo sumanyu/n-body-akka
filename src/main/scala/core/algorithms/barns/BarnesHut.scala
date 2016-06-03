@@ -1,20 +1,17 @@
 package core.algorithms.barns
 
-//class BarnesHut extends NBodyAlgorithm {
-//  private val q: Quad = Quad(0, 0, 2 * UniverseConstants.UNIVERSE_RADIUS)
-//
-//  def updateBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
-//    val tree: BHTree = new BHTree(q)
-//    val bodiesInQuad = bodies.filter(q.contains)
-//
-//    bodiesInQuad.foreach { body =>
-//      tree.insert(body)
-//    }
-//
-//    bodiesInQuad.foreach { body =>
-//      body.resetForce
-//      tree.updateForce(body)
-//      body.updateStateVariables
-//    }
-//  }
-//}
+import core.algorithms.NBodyAlgorithm
+import core.models.Body
+import core.universe.UniverseConstants
+
+class BarnesHut extends NBodyAlgorithm {
+  private val universeQuad = Quad(0, 0, 2 * UniverseConstants.UNIVERSE_RADIUS)
+
+  def updateBodies(bodies: IndexedSeq[Body]): IndexedSeq[Body] = {
+    val tree = new BHTree(universeQuad)
+    val bodiesInQuad = bodies.filter(universeQuad.contains)
+
+    bodiesInQuad.foreach(tree.insert)
+    bodiesInQuad.map(_.resetForce).map(tree.updateForce).map(_.updateStateVariables())
+  }
+}
