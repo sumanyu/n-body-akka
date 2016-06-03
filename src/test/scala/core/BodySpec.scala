@@ -59,4 +59,10 @@ class BodySpec extends BaseSpec {
 
     result.force shouldEqual Vector2D.Zero
   }
+
+  "setting zero mass for body" should "throw exception" in {
+    intercept[IllegalArgumentException] {
+      Body(mass = 0)
+    }
+  }
 }

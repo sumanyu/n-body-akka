@@ -5,11 +5,13 @@ import java.awt.Color
 import core.universe.UniverseConstants._
 import Vector2D._
 
-case class Body(position: Vector2D,
+case class Body(position: Vector2D = Zero,
                 velocity: Vector2D = Zero,
                 force: Vector2D = Zero,
-                mass: Double = 0,
+                mass: Double = 0.1,
                 color: Color = Color.BLACK) {
+
+  require(mass > 0, "Mass cannot be negative or zero")
 
   def +(that: Body): Body = {
     val totalMass = mass + that.mass
