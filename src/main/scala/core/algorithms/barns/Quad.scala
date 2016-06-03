@@ -1,6 +1,8 @@
-package core.models
+package core.algorithms.barns
 
-case class Quad(midpoint: Vector2D, sideLength: Double) {
+import core.models.{Body, Vector2D}
+
+private[barns] case class Quad(midpoint: Vector2D, sideLength: Double) {
 
   private def halfSideLength = sideLength / 2.0
 
@@ -21,6 +23,6 @@ case class Quad(midpoint: Vector2D, sideLength: Double) {
   def southEast = Quad(Vector2D(midpoint.x + sideLength, midpoint.y - sideLength) / 4.0, halfSideLength)
 }
 
-object Quad {
+private[barns] object Quad {
   def apply(x: Int, y: Int, sideLength: Double): Quad = Quad(Vector2D(x, y), sideLength)
 }

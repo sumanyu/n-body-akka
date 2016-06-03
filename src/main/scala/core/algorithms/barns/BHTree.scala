@@ -1,6 +1,8 @@
-package core.models
+package core.algorithms.barns
 
-class BHTree(q: Quad) {
+import core.models.Body
+
+private[barns] class BHTree(q: Quad) {
   private val THETA: Double = 0.5
   private var body: Body = null
   private var NW: BHTree = null
