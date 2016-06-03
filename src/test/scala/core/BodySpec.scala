@@ -14,5 +14,9 @@ class BodySpec extends BaseSpec {
     delta shouldBe closeTo(0.02)
   }
 
+  it should "" in {
 
+  }
+
+  //TODO tests for other body functions
 }
