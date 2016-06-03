@@ -37,7 +37,8 @@ case class Body(position: Vector2D,
   def resetForce: Body = copy(force = Zero)
 
   def updateStateVariables(): Body = {
-    val deltaVelocity = force / mass * DISCRETIZED_TIME_STEP
+    val acceleration = force / mass
+    val deltaVelocity = acceleration * DISCRETIZED_TIME_STEP
     val deltaPosition = (velocity + (deltaVelocity / 2.0)) * DISCRETIZED_TIME_STEP
     copy(position = this.position + deltaPosition, velocity = this.velocity + deltaVelocity)
   }
