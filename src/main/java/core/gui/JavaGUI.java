@@ -2,6 +2,7 @@ package core.gui;
 
 import core.models.Body;
 import core.universe.SystemState;
+import core.universe.UniverseConstants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,11 +57,11 @@ public class JavaGUI extends JFrame {
             g.drawOval(0, 0, universeRadius*2, universeRadius*2);
             for(Body b : systemState.getJavaBodies()) {
                 g.setColor(b.color());
-                int x = (int) Math.round(
-                        b.position().x()*scale+universeRadius);
-                int y = (int) Math.round(
-                        b.position().y()*scale+universeRadius);
-                g.drawOval(x, y, 2, 2);
+                int x = (int) Math.round(b.position().x()*scale+universeRadius);
+                int y = (int) Math.round(b.position().y()*scale+universeRadius);
+                int height = (int) Math.max(1, 20 * b.mass() / UniverseConstants.SOLAR_MASS());
+                int width = height;
+                g.drawOval(x, y, width, height);
             }
 
             try {

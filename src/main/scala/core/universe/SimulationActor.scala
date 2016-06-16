@@ -67,7 +67,7 @@ object SimulationActor {
   def props(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm, systemState: SystemState) =
     Props(new SimulationActor(numberOfBodies: Int, nBodyAlgorithm: NBodyAlgorithm, systemState: SystemState))
 
-  def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), 1e6 * SOLAR_MASS, Color.RED)
+  def generateSun() = Body(Vector2D(0, 0), Vector2D(0, 0), Vector2D(0, 0), SOLAR_MASS, Color.RED)
 
   def generateRandomBody() = {
     val position  = generatePositionVector
@@ -93,14 +93,15 @@ object SimulationActor {
   //Helps initialize bodies in circular orbits around a central mass
   def circleInitialization(rx: Double, ry: Double): Double = {
     val r2 = Math.sqrt(rx * rx + ry * ry)
-    val numerator = GRAVITATION * 1e6 * SOLAR_MASS
+    val numerator = GRAVITATION * SOLAR_MASS
     Math.sqrt(numerator / r2)
   }
 
-  def generateMass = Math.random * SOLAR_MASS * 10 + 1e20
+  //min: 1e20, max: solar mass
+  def generateMass = Math.random * (SOLAR_MASS - MIN_MASS) + MIN_MASS
 
   def generateColor(mass: Double) = {
-    def randomColor = Math.floor(mass * 254 / (SOLAR_MASS * 10 + 1e20)).toInt
+    def randomColor = Math.floor(mass * 254 / SOLAR_MASS).toInt
 
     val red   = randomColor
     val blue  = randomColor
